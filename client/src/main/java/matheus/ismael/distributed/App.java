@@ -1,13 +1,9 @@
 package matheus.ismael.distributed;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class App {
     public static void main(String[] args) throws Exception {
@@ -18,7 +14,7 @@ public class App {
         System.out.println("Usage:");
         System.out.println("\tValues separated by a ','");
         System.out.println("\t* is a wildcard");
-        while (true){
+        while (true) {
             System.out.println();
             System.out.println("Options:");
             for (Option option : Option.values()) {
@@ -35,7 +31,7 @@ public class App {
                             getArray.addAll(List.of(tupleInput.split(",")));
                             ArrayList<String> test = tupleSpaceInterface.getTuple(getArray);
                             System.out.println(test);
-                        } catch (Exception e){
+                        } catch (Exception e) {
                             System.out.println(e.getMessage());
                         }
                     }
@@ -45,7 +41,7 @@ public class App {
                             ArrayList<String> getArray = new ArrayList<>();
                             getArray.addAll(List.of(tupleInput.split(",")));
                             tupleSpaceInterface.writeTuple(getArray);
-                        } catch (Exception e){
+                        } catch (Exception e) {
                             System.out.println(e.getMessage());
                         }
                     }
@@ -55,12 +51,12 @@ public class App {
                         getArray.addAll(List.of(tupleInput.split(",")));
                         try {
                             ArrayList<String> test = tupleSpaceInterface.readTuple(getArray);
-                            if (test.isEmpty()){
+                            if (test.isEmpty()) {
                                 System.out.println("No tuple found");
                             } else {
                                 System.out.println(test);
                             }
-                        } catch (Exception e){
+                        } catch (Exception e) {
                             System.out.println(e.getMessage());
                         }
                     }
@@ -73,7 +69,6 @@ public class App {
                         } catch (Exception e) {
                             System.out.println(e.getMessage());
                         }
-
                     }
                     case exit -> {
                         tupleSpaceInterface.close();

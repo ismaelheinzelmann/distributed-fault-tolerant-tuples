@@ -1,9 +1,7 @@
 package matheus.ismael.distributed.messages.server;
 
+import java.io.Serializable;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
-
 @NoArgsConstructor
-public class GetStateMessage implements Serializable {
-}
+public class GetStateMessage implements Serializable {}

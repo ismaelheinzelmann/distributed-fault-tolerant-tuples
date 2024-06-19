@@ -1,16 +1,15 @@
 package matheus.ismael.distributed;
 
-import matheus.ismael.distributed.messages.server.*;
-import org.jgroups.Address;
-import org.jgroups.JChannel;
-import org.jgroups.ObjectMessage;
-
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import matheus.ismael.distributed.messages.server.*;
+import org.jgroups.Address;
+import org.jgroups.JChannel;
+import org.jgroups.ObjectMessage;
 
 public class TupleSpaceInterface {
     private final JChannel clientChannel;
@@ -20,12 +19,14 @@ public class TupleSpaceInterface {
     private final Condition returnTupleCondition = lock.newCondition();
 
     public TupleSpaceInterface() throws Exception {
-        InputStream clientInputStream = TupleSpaceReceiver.class.getClassLoader().getResourceAsStream("CLIENT.xml");
+        InputStream clientInputStream =
+                TupleSpaceReceiver.class.getClassLoader().getResourceAsStream("CLIENT.xml");
         if (clientInputStream == null) {
             throw new RuntimeException("CLIENT.xml not found in resources");
         }
         clientChannel = new JChannel(clientInputStream);
-        TupleSpaceReceiver tupleSpaceReceiver = new TupleSpaceReceiver(tuple, lock, returnTupleCondition, tupleList);
+        TupleSpaceReceiver tupleSpaceReceiver =
+                new TupleSpaceReceiver(tuple, lock, returnTupleCondition, tupleList);
         Thread thread = new Thread(tupleSpaceReceiver);
         thread.start();
         clientChannel.connect("tuple-spaces-client");
@@ -35,7 +36,7 @@ public class TupleSpaceInterface {
 
     public ArrayList<String> getTuple(ArrayList<String> tupplePattern) throws Exception {
         var server = getServer();
-        if (server.isEmpty()){
+        if (server.isEmpty()) {
             throw new RuntimeException("No server found.");
         }
         clientChannel.send(new ObjectMessage(server.get(), new GetTupleMessage(tupplePattern)));
@@ -48,7 +49,7 @@ public class TupleSpaceInterface {
 
     public ArrayList<String> readTuple(ArrayList<String> tupplePattern) throws Exception {
         var server = getServer();
-        if (server.isEmpty()){
+        if (server.isEmpty()) {
             throw new RuntimeException("No server found.");
         }
         clientChannel.send(new ObjectMessage(server.get(), new ReadTupleMessage(tupplePattern)));
@@ -60,24 +61,24 @@ public class TupleSpaceInterface {
 
     public void writeTuple(ArrayList<String> tupplePattern) throws Exception {
         var server = getServer();
-        if (server.isEmpty()){
+        if (server.isEmpty()) {
             throw new RuntimeException("No server found.");
         }
         clientChannel.send(new ObjectMessage(server.get(), new WriteTupleMessage(tupplePattern)));
     }
 
-
-    private Optional<Address> getServer(){
-        for (Address address: clientChannel.getView().getMembers()){
-            if (address.toString().startsWith("SERVER")){
+    private Optional<Address> getServer() {
+        for (Address address : clientChannel.getView().getMembers()) {
+            if (address.toString().startsWith("SERVER")) {
                 return Optional.of(address);
             }
         }
         return Optional.empty();
     }
+
     public ArrayList<ArrayList<String>> listTuples() throws Exception {
         var server = getServer();
-        if (server.isEmpty()){
+        if (server.isEmpty()) {
             throw new RuntimeException("No server found.");
         }
         clientChannel.send(new ObjectMessage(server.get(), new GetListMessage()));
@@ -86,7 +87,8 @@ public class TupleSpaceInterface {
         lock.unlock();
         return tupleList;
     }
-    public void close(){
+
+    public void close() {
         clientChannel.close();
     }
 }
