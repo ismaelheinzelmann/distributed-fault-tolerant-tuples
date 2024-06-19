@@ -217,7 +217,7 @@ public class TupleSpace implements Receiver, Runnable {
             }
             boolean verify = true;
             for (int j = 0; j < pattern.length; j++) {
-                if (pattern[j].endsWith("*") && pattern[j].length() == 1) {
+                if (getQueuePattern[j].endsWith("*") && getQueuePattern[j].length() == 1) {
                     continue;
                 }
                 if (!Objects.equals(pattern[j], getQueuePattern[j])) {
