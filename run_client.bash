@@ -1,0 +1,1 @@
+java -jar client/target/distributed-tuples-client-1.0.jar

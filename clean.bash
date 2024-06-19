@@ -1,0 +1,1 @@
+cd client && mvn clean && cd ../server && mvn clean

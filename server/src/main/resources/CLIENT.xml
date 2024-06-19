@@ -1,0 +1,81 @@
+<config xmlns="urn:org:jgroups"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="urn:org:jgroups http://www.jgroups.org/schema/jgroups-4.2.xsd">
+
+    <!-- UDP protocol configuration -->
+    <UDP
+            mcast_port="${jgroups.udp.mcast_port:45589}"
+            ucast_recv_buf_size="5M"
+            ucast_send_buf_size="640K"
+            mcast_recv_buf_size="5M"
+            mcast_send_buf_size="640K"
+            max_bundle_size="64K"
+            ip_ttl="${jgroups.udp.ip_ttl:2}"
+            enable_diagnostics="true"
+            thread_pool.enabled="true"
+            thread_pool.min_threads="2"
+            thread_pool.max_threads="8"
+            thread_pool.keep_alive_time="5000"/>
+
+    <!-- PING protocol for initial discovery -->
+    <PING />
+
+    <!-- MERGE3 protocol for partition merging -->
+    <MERGE3 max_interval="30000"
+            min_interval="10000"/>
+
+    <!-- FD_SOCK protocol for failure detection using sockets -->
+    <FD_SOCK/>
+
+    <!-- FD_ALL protocol for failure detection -->
+    <FD_ALL/>
+
+    <!-- VERIFY_SUSPECT protocol for verifying suspicions -->
+    <VERIFY_SUSPECT timeout="1500"  />
+
+    <!-- BARRIER protocol for barriers -->
+    <BARRIER />
+
+    <!-- CENTRAL_LOCK protocol for central locking -->
+    <CENTRAL_LOCK />
+
+    <!-- NAKACK2 protocol for reliable and ordered delivery -->
+    <pbcast.NAKACK2
+            use_mcast_xmit="true"
+            discard_delivered_msgs="true"/>
+
+    <!-- UNICAST3 protocol for point-to-point ordered delivery -->
+    <UNICAST3
+            xmit_table_num_rows="100"
+            xmit_table_msgs_per_row="1000"
+            xmit_table_max_compaction_time="30000"/>
+
+    <!-- STABLE protocol for stability and view synchronization -->
+    <pbcast.STABLE
+            stability_delay="1000"
+            desired_avg_gossip="50000"
+            max_bytes="4M"/>
+
+    <!-- GMS protocol for group management -->
+    <pbcast.GMS
+            print_local_addr="true"
+            join_timeout="2000"/>
+
+    <!-- UFC protocol for flow control -->
+    <UFC
+            max_credits="2M"
+            min_threshold="0.4"/>
+
+    <!-- MFC protocol for message flow control -->
+    <MFC
+            max_credits="2M"
+            min_threshold="0.4"/>
+
+    <!-- FRAG2 protocol for fragmentation -->
+    <FRAG2
+            frag_size="60K"/>
+
+    <!-- STATE_TRANSFER protocol for state transfer -->
+    <pbcast.STATE_TRANSFER/>
+
+</config>
