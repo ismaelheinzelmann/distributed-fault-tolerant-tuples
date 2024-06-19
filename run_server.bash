@@ -1,1 +1,1 @@
-java -jar server/target/distributed-tuples-server-1.0.jar
+java -Djava.util.logging.config.file=logging.properties -jar server/target/distributed-tuples-server-1.0.jar
