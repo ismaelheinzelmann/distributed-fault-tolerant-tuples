@@ -37,7 +37,7 @@ public class Sala {
         ).concat(
                 (computadores ? "" : "Sem") + " Computadores | "
         ).concat(
-               ( mesaCompartilhada ? "" : "Sem") + " Mesa Compartilhada | "
+                ( mesaCompartilhada ? "" : "Sem") + " Mesa Compartilhada | "
         ).concat(
                 capacidade ? "50" : "25" + " pessoas"
         );

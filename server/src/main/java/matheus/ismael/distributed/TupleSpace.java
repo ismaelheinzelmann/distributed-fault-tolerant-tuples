@@ -2,6 +2,7 @@ package matheus.ismael.distributed;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.locks.Condition;
@@ -14,7 +15,7 @@ import org.jgroups.blocks.locking.LockService;
 import org.jgroups.util.MessageBatch;
 import org.jgroups.util.Tuple;
 
-public class TupleSpace implements Receiver, Runnable {
+public class TupleSpace implements Receiver, Runnable, ChannelListener {
     private final JChannel serverChannel;
     private final JChannel clientChannel;
     private final ArrayList<ArrayList<String>> tupleSpace = new ArrayList<>();
@@ -50,6 +51,13 @@ public class TupleSpace implements Receiver, Runnable {
         clientChannel.setReceiver(this);
         if (serverChannel.getView().getCoord() != serverChannel.getAddress()) {
             sendGetStateRequest();
+        } else {
+            tupleSpaceLock.lock();
+            Arrays.stream(StartSalas.values()).forEach(s ->{
+                tupleSpace.add(s.sample.getTuple());
+            });
+            serverChannel.send(new ObjectMessage(null, new StateMessage(tupleSpace, new ArrayList<>())));
+            tupleSpaceLock.unlock();
         }
     }
 
@@ -61,8 +69,15 @@ public class TupleSpace implements Receiver, Runnable {
             Lock tupleSpaceLock = lockService.getLock("tuple-spaces");
             tupleSpaceLock.lock();
             synchronized (tupleSpaceLock) {
+                ArrayList<ArrayList<String>> temp = new ArrayList<>();
+                for (Tuple<String, Address> tuple : getQueue) {
+                    ArrayList<String> get = new ArrayList<>();
+                    get.add(tuple.getVal1());
+                    get.add(tuple.getVal2().toString());
+                    temp.add(get);
+                }
                 serverChannel.send(
-                        new ObjectMessage(batch.getSender(), new StateMessage(tupleSpace)));
+                        new ObjectMessage(batch.getSender(), new StateMessage(tupleSpace, temp)));
             }
             tupleSpaceLock.unlock();
         } else if (message instanceof RemoveTuple) {
@@ -89,6 +104,10 @@ public class TupleSpace implements Receiver, Runnable {
             tupleSpaceLock.lock();
             tupleSpace.clear();
             tupleSpace.addAll(((StateMessage) message).getTuples());
+            for (ArrayList<String> tuple : ((StateMessage) message).getGetRequests()) {
+                Address address = clientChannel.getView().getMembers().stream().filter(f -> f.toString().equals(tuple.get(1))).findFirst().get();
+                getQueue.add(new Tuple<>(tuple.get(0), address));
+            }
             stateCondition.signalAll();
             tupleSpaceLock.unlock();
         } else if (message instanceof GetTupleQueueMessage) {
@@ -111,10 +130,7 @@ public class TupleSpace implements Receiver, Runnable {
                     clientChannel.send(
                             new ObjectMessage(
                                     batch.getSender(), new ReturnTuple(matchingTuple.get())));
-                    //                    serverChannel.send(new ObjectMessage(null, new
-                    // RemoveTuple(((GetTupleMessage) message).getTuple())));
                 } else {
-                    // ENVIAR O ADDRESS PARA OS OUTROS INFORMANDO QUE ALGUEM ESPERA UMA TUPLA
                     getQueue.add(
                             new Tuple<>(
                                     String.join(",", ((GetTupleMessage) message).getTuple()),
@@ -240,4 +256,12 @@ public class TupleSpace implements Receiver, Runnable {
             Thread.currentThread().interrupt();
         }
     }
+
+    @Override
+    public void viewAccepted(View view) {
+        if (!view.getMembers().stream().allMatch(add -> add.toString().equals("SERVER"))){
+            getQueue.removeIf(tuple -> !view.containsMember(tuple.getVal2()));
+        }
+    }
+
 }

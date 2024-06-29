@@ -11,7 +11,9 @@ public class App {
         while (true) {
             System.out.println();
             System.out.println("Escolha uma opção:");
-            Arrays.stream(Option.values()).toList().forEach(System.out::println);
+            Arrays.stream(Option.values()).toList().forEach(op ->{
+                System.out.println(op.toString() + op.description);
+            });
             String input = reader.nextLine();
             Optional<Option> option = Option.findByCode(input);
             if (option.isPresent()) {
@@ -19,18 +21,18 @@ public class App {
                 switch (option.get()) {
                     case reservar -> {
                         try {
-                            System.out.println("Para as opções abaixo, insira-as na ordem dividas por espaço.");
-                            System.out.println("As opções podem ser respondidas com <sim/nao/*>.");
-                            System.out.println("Capacidades disponíveis são 25 e 50");
-                            System.out.println("* significa tanto faz.");
-                            System.out.println("Projetor | Ar Condicionado | Computadores | Mesa Compartilhada | Capacidade");
+                            System.out.println(">Para as opções abaixo, insira-as na ordem dividas por espaço.");
+                            System.out.println(">As opções podem ser respondidas com <sim/nao/*>.");
+                            System.out.println(">Capacidades disponíveis são 25 e 50");
+                            System.out.println(">* significa tanto faz.");
+                            System.out.println(">Projetor | Ar Condicionado | Computadores | Mesa Compartilhada | Capacidade");
                             var request = getValidated(reader);
                             ArrayList<String> returnTuple = tupleSpaceInterface.getTuple(request);
                             sala = new Sala(returnTuple);
                             System.out.println();
-                            System.out.println("A sala adquirida foi a seguinte:");
+                            System.out.println(">A sala adquirida foi a seguinte:");
                             System.out.println(sala);
-                            System.out.println("Para devolver, aperte Enter!");
+                            System.out.println(">Para devolver, aperte Enter!");
                             reader.nextLine();
                             tupleSpaceInterface.writeTuple(returnTuple);
                         } catch (Exception e) {
@@ -38,17 +40,18 @@ public class App {
                         }
                     }
                     case registrar -> {
-                        System.out.println("Para os dados abaixo, insira-as na ordem dividas por espaço.");
-                        System.out.println("Os dados podem ser respondidas com <sim/nao/*>.");
-                        System.out.println("Capacidades disponíveis são 25 e 50");
-                        System.out.println("Nome | Projetor | Ar Condicionado | Computadores | Mesa Compartilhada | Capacidade");
+                        System.out.println(">Para os dados abaixo, insira-as na ordem dividas por espaço.");
+                        System.out.println(">Os dados podem ser respondidas com <sim/nao/*>.");
+                        System.out.println(">Capacidades disponíveis são 25 e 50");
+                        System.out.println(">Nome | Projetor | Ar Condicionado | Computadores | Mesa Compartilhada | Capacidade");
+                        System.out.println(">Exemplo de entrada: CTC101 sim sim sim sim 25");
                         tupleSpaceInterface.writeTuple(writeValidated(reader));
                     }
                     case verificar -> {
-                        System.out.println("Para os dados abaixo, insira-as na ordem dividas por espaço.");
-                        System.out.println("Os dados podem ser respondidas com <sim/nao/*>.");
-                        System.out.println("Capacidades disponíveis são 25 e 50");
-                        System.out.println("Nome | Projetor | Ar Condicionado | Computadores | Mesa Compartilhada | Capacidade");
+                        System.out.println(">Para os dados abaixo, insira-as na ordem dividas por espaço.");
+                        System.out.println(">Os dados podem ser respondidas com <sim/nao/*>.");
+                        System.out.println(">Capacidades disponíveis são 25 e 50");
+                        System.out.println(">Nome | Projetor | Ar Condicionado | Computadores | Mesa Compartilhada | Capacidade");
                         System.out.println();
                         var tuple = tupleSpaceInterface.readTuple(readValidated(reader));
                         if (tuple.isEmpty()) {
@@ -57,6 +60,13 @@ public class App {
                             var temp = new Sala(tuple);
                             System.out.println(temp);
                         }
+                    }
+                    case listar -> {
+                        var salas = tupleSpaceInterface.listTuples();
+                        salas.stream().forEach(s ->{
+                            var availableSala = new Sala(s);
+                            System.out.println(availableSala);
+                        });
                     }
                     case sair -> {
                         tupleSpaceInterface.close();
