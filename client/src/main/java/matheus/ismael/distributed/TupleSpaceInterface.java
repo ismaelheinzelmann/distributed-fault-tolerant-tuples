@@ -1,15 +1,16 @@
 package matheus.ismael.distributed;
 
+import matheus.ismael.distributed.messages.server.*;
+import org.jgroups.Address;
+import org.jgroups.JChannel;
+import org.jgroups.ObjectMessage;
+
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import matheus.ismael.distributed.messages.server.*;
-import org.jgroups.Address;
-import org.jgroups.JChannel;
-import org.jgroups.ObjectMessage;
 
 public class TupleSpaceInterface {
     private final JChannel clientChannel;

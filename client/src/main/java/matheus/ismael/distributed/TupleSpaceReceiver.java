@@ -1,11 +1,13 @@
 package matheus.ismael.distributed;
 
+import matheus.ismael.distributed.messages.server.GetListReturnalMessage;
+import matheus.ismael.distributed.messages.server.ReturnTuple;
+import org.jgroups.Receiver;
+import org.jgroups.util.MessageBatch;
+
 import java.util.ArrayList;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
-import matheus.ismael.distributed.messages.server.*;
-import org.jgroups.*;
-import org.jgroups.util.MessageBatch;
 
 public class TupleSpaceReceiver implements Receiver, Runnable {
     ArrayList<String> tuple;
