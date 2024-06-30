@@ -1,5 +1,6 @@
 package matheus.ismael.distributed;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class App {
@@ -21,18 +22,19 @@ public class App {
                 switch (option.get()) {
                     case reservar -> {
                         try {
-                            System.out.println(">Para as opções abaixo, insira-as na ordem dividas por espaço.");
-                            System.out.println(">As opções podem ser respondidas com <sim/nao/*>.");
-                            System.out.println(">Capacidades disponíveis são 25 e 50");
-                            System.out.println(">* significa tanto faz.");
-                            System.out.println(">Projetor | Ar Condicionado | Computadores | Mesa Compartilhada | Capacidade");
+                            System.out.println("> Para as opções abaixo, insira-as na ordem dividas por espaço.");
+                            System.out.println("> As opções podem ser respondidas com <sim/nao/*>.");
+                            System.out.println("> Capacidades disponíveis são 25 e 50");
+                            System.out.println("> * significa tanto faz.");
+                            System.out.println("> Projetor | Ar Condicionado | Computadores | Mesa Compartilhada | Capacidade");
+                            System.out.println();
                             var request = getValidated(reader);
                             ArrayList<String> returnTuple = tupleSpaceInterface.getTuple(request);
                             sala = new Sala(returnTuple);
                             System.out.println();
-                            System.out.println(">A sala adquirida foi a seguinte:");
+                            System.out.println("> A sala adquirida foi a seguinte:");
                             System.out.println(sala);
-                            System.out.println(">Para devolver, aperte Enter!");
+                            System.out.println("> Para devolver, aperte Enter!");
                             reader.nextLine();
                             tupleSpaceInterface.writeTuple(returnTuple);
                         } catch (Exception e) {
@@ -40,33 +42,48 @@ public class App {
                         }
                     }
                     case registrar -> {
-                        System.out.println(">Para os dados abaixo, insira-as na ordem dividas por espaço.");
-                        System.out.println(">Os dados podem ser respondidas com <sim/nao/*>.");
-                        System.out.println(">Capacidades disponíveis são 25 e 50");
-                        System.out.println(">Nome | Projetor | Ar Condicionado | Computadores | Mesa Compartilhada | Capacidade");
-                        System.out.println(">Exemplo de entrada: CTC101 sim sim sim sim 25");
-                        tupleSpaceInterface.writeTuple(writeValidated(reader));
-                    }
-                    case verificar -> {
-                        System.out.println(">Para os dados abaixo, insira-as na ordem dividas por espaço.");
-                        System.out.println(">Os dados podem ser respondidas com <sim/nao/*>.");
-                        System.out.println(">Capacidades disponíveis são 25 e 50");
-                        System.out.println(">Nome | Projetor | Ar Condicionado | Computadores | Mesa Compartilhada | Capacidade");
+                        System.out.println("> Para os dados abaixo, insira-as na ordem dividas por espaço.");
+                        System.out.println("> Os dados podem ser respondidas com <sim/nao/*>.");
+                        System.out.println("> Capacidades disponíveis são 25 e 50");
+                        System.out.println("> Nome | Projetor | Ar Condicionado | Computadores | Mesa Compartilhada | Capacidade");
+                        System.out.println("> Exemplo de entrada: CTC101 sim sim sim sim 25");
                         System.out.println();
-                        var tuple = tupleSpaceInterface.readTuple(readValidated(reader));
-                        if (tuple.isEmpty()) {
-                            System.out.println("Não há salas para o padrão inserido.");
-                        } else {
-                            var temp = new Sala(tuple);
-                            System.out.println(temp);
+                        try{
+                            tupleSpaceInterface.writeTuple(writeValidated(reader));
+                        } catch (RuntimeException e){
+                            System.out.println(e.getMessage());
                         }
                     }
+                    case verificar -> {
+                        System.out.println("> Para os dados abaixo, insira-as na ordem dividas por espaço.");
+                        System.out.println("> Os dados podem ser respondidas com <sim/nao/*>.");
+                        System.out.println("> Capacidades disponíveis são 25 e 50");
+                        System.out.println("> Nome | Projetor | Ar Condicionado | Computadores | Mesa Compartilhada | Capacidade");
+                        System.out.println();
+                        try {
+                            var tuple = tupleSpaceInterface.readTuple(readValidated(reader));
+                            if (tuple.isEmpty()) {
+                                System.out.println("Não há salas para o padrão inserido.");
+                            } else {
+                                var temp = new Sala(tuple);
+                                System.out.println(temp);
+                            }
+                        } catch (RuntimeException e){
+                            System.out.println(e.getMessage());
+                        }
+
+                    }
                     case listar -> {
-                        var salas = tupleSpaceInterface.listTuples();
-                        salas.stream().forEach(s ->{
-                            var availableSala = new Sala(s);
-                            System.out.println(availableSala);
-                        });
+                        try{
+                            var salas = tupleSpaceInterface.listTuples();
+                            salas.forEach(s ->{
+                                var availableSala = new Sala(s);
+                                System.out.println(availableSala);
+                            });
+                        } catch (RuntimeException e){
+                            System.out.println(e.getMessage());
+                        }
+
                     }
                     case sair -> {
                         tupleSpaceInterface.close();

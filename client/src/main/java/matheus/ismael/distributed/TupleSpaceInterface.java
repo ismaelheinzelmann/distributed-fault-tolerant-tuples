@@ -18,7 +18,7 @@ public class TupleSpaceInterface {
     private final ArrayList<ArrayList<String>> tupleList = new ArrayList<>();
     private final Lock lock = new ReentrantLock();
     private final Condition returnTupleCondition = lock.newCondition();
-
+    final String SEM_SERVIDORES = "Não há servidores disponíveis.";
     public TupleSpaceInterface() throws Exception {
         InputStream clientInputStream =
                 TupleSpaceReceiver.class.getClassLoader().getResourceAsStream("CLIENT.xml");
@@ -38,7 +38,7 @@ public class TupleSpaceInterface {
     public ArrayList<String> getTuple(ArrayList<String> tupplePattern) throws Exception {
         var server = getServer();
         if (server.isEmpty()) {
-            throw new RuntimeException("No server found.");
+            throw new RuntimeException(SEM_SERVIDORES);
         }
         clientChannel.send(new ObjectMessage(server.get(), new GetTupleMessage(tupplePattern)));
         lock.lock();
@@ -51,7 +51,7 @@ public class TupleSpaceInterface {
     public ArrayList<String> readTuple(ArrayList<String> tupplePattern) throws Exception {
         var server = getServer();
         if (server.isEmpty()) {
-            throw new RuntimeException("No server found.");
+            throw new RuntimeException(SEM_SERVIDORES);
         }
         clientChannel.send(new ObjectMessage(server.get(), new ReadTupleMessage(tupplePattern)));
         lock.lock();
@@ -63,7 +63,7 @@ public class TupleSpaceInterface {
     public void writeTuple(ArrayList<String> tupplePattern) throws Exception {
         var server = getServer();
         if (server.isEmpty()) {
-            throw new RuntimeException("No server found.");
+            throw new RuntimeException(SEM_SERVIDORES);
         }
         clientChannel.send(new ObjectMessage(server.get(), new WriteTupleMessage(tupplePattern)));
     }
@@ -80,7 +80,7 @@ public class TupleSpaceInterface {
     public ArrayList<ArrayList<String>> listTuples() throws Exception {
         var server = getServer();
         if (server.isEmpty()) {
-            throw new RuntimeException("No server found.");
+            throw new RuntimeException(SEM_SERVIDORES);
         }
         clientChannel.send(new ObjectMessage(server.get(), new GetListMessage()));
         lock.lock();
