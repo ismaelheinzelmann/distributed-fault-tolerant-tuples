@@ -3,14 +3,14 @@ package matheus.ismael.distributed;
 import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 @RequiredArgsConstructor
 public enum StartSalas {
-    CTC101(new Sala(new ArrayList<>(Arrays.asList("CTC101", "sim", "sim", "nao", "nao","25")))),
-    CTC102(new Sala(new ArrayList<>(Arrays.asList("CTC102", "sim", "nao", "nao", "nao","50")))),
-    INE101(new Sala(new ArrayList<>(Arrays.asList("INE101", "sim", "sim", "sim", "sim","25")))),
-    CTC304(new Sala(new ArrayList<>(Arrays.asList("CTC101", "sim", "sim", "nao", "nao","25")))),
-    INE105(new Sala(new ArrayList<>(Arrays.asList("INE105", "sim", "nao", "sim", "sim","25"))));
+    CTC101(new Sala(new ArrayList<>(){{add("CTC101"); add("sim"); add("sim"); add("nao"); add("nao"); add("25");}})),
+    CTC102(new Sala(new ArrayList<>(){{add("CTC102"); add("sim"); add("nao"); add("nao"); add("nao"); add("50");}})),
+    INE101(new Sala(new ArrayList<>(){{add("INE101"); add("sim"); add("sim"); add("sim"); add("sim"); add("25");}})),
+    INE105(new Sala(new ArrayList<>(){{add("INE105"); add("sim"); add("nao"); add("sim"); add("sim"); add("25");}})),
+    CTC304(new Sala(new ArrayList<>(){{add("CTC304"); add("nao"); add("nao"); add("nao"); add("sim"); add("50");}})),
+    CTC305(new Sala(new ArrayList<>(){{add("CTC305"); add("sim"); add("sim"); add("nao"); add("nao"); add("50");}}));
     final Sala sample;
 }

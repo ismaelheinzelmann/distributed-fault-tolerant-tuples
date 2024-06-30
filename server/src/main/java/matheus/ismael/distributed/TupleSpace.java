@@ -261,6 +261,8 @@ public class TupleSpace implements Receiver, Runnable, ChannelListener {
     public void viewAccepted(View view) {
         if (!view.getMembers().stream().allMatch(add -> add.toString().equals("SERVER"))){
             getQueue.removeIf(tuple -> !view.containsMember(tuple.getVal2()));
+        } else if (clientChannel.getView().getMembers().stream().allMatch(add -> add.toString().equals("SERVER"))){
+            getQueue.clear();
         }
     }
 
